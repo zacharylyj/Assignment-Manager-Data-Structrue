@@ -1,0 +1,11 @@
+now I want to be able to have variables in the expression
+
+when getting a = c+7
+first look through the tree and if a variable is found recursive the function to look into that variable.
+it will look at the dictionary key "c" and evaluate the item, it then use the value of "c" 
+if c = 5 + d evaluate d first
+if c = None return "a" as None
+if c = a print (f"Circular dependency detected involving '{var}'")
+
+example
+{'d': 'y', 'a': '(3 + (4 * 5))', 'c': 'a ** 2', 'b': 'a + c', 'y': None}
