@@ -28,3 +28,42 @@ class InputValidator:
             filename += '.txt'
 
         return True
+
+class EquationSorter:
+    def __init__(self):
+        self.eq_dict = {}
+        self.dependency_graph = {}
+
+    def _add_dependencies(self, var, sorted_eqs, seen, undefined_vars):
+        if var in seen:
+            raise ValueError(f"Circular dependency detected involving '{var}'")
+        if var not in sorted_eqs:
+            if var not in self.dependency_graph:
+                undefined_vars.add(var)
+                return
+            seen.add(var)
+            for dep in self.dependency_graph.get(var, []):
+                self._add_dependencies(dep, sorted_eqs, seen, undefined_vars)
+            sorted_eqs[var] = self.eq_dict[var]
+            seen.remove(var)
+
+    def sort_equations(self, equations):
+        # parsing the equations to extract variables and their dependencies
+        for eq in equations:
+            var, expr = eq.split(" = ")
+            deps = set([x for x in expr.split(" ") if x.isalpha() and x != var])
+            self.eq_dict[var] = expr
+            self.dependency_graph[var] = deps
+
+        # sorting the equations based on dependencies
+        sorted_eqs = {}
+        seen = set()
+        undefined_vars = set()
+        for var in self.dependency_graph:
+            self._add_dependencies(var, sorted_eqs, seen, undefined_vars)
+
+        # adding undefined variables at the end
+        for var in undefined_vars:
+            sorted_eqs[var] = None
+
+        return sorted_eqs
