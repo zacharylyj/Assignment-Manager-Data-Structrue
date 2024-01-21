@@ -1,43 +1,45 @@
 from private.menu import Menu
-from private.tree import Tree
+from private.tree import ExpressionTokenizer, ParseTreeBuilder, BinaryTreeEvaluator
+from private.utils import InputHandler, DictionaryHandler
 import os
 import math
 
 
 class Controller:
     def __init__(self):
+        self.assignments = {}
         self.menu = Menu()
-        self.tree = Tree()
+        self.tkn = ExpressionTokenizer()
+        self.ptb = ParseTreeBuilder()
+        self.bte = BinaryTreeEvaluator()
+        self.ih = InputHandler()
+        self.dh = DictionaryHandler()
+
 
 ########################################################################################################################################################
 # 1.)
     def assign(self):
-        var_dict = {}
-
-        while True:
-            user_input = input("Enter variable assignment or 'exit' to quit: ")
-            
-            if user_input.lower() == 'exit':
-                break
-
-            # Assuming the format is 'variable = expression'
-            if '=' in user_input:
-                var_name, expression = user_input.split('=', 1)
-                var_name = var_name.strip()
-                
-                try:
-                    tree = build_parse_tree(expression.strip())
-                    var_dict[var_name] = evaluate(tree, var_dict)
-                    print(f"{var_name} = {var_dict[var_name]}")
-                except Exception as e:
-                    print(f"Error evaluating expression: {e}")
-            else:
-                print("Invalid input format. Please use 'variable = expression' format.")
+        assignment_input = input("Enter the assignment stament you want to add/modify:\nFor example, a=(1+2)\n| ")
+        while(True):
+            if assignment_input.lower() == "q" or assignment_input.lower() == "exit":
+                print()
+                self.menu.select_option()
+            elif self.ih.is_valid_assignment(assignment_input):
+                assignments = self.dh.add_to_dict(assignment_input, self.assignments)
+            print()
+            assignment_input = input("Enter another assignment statement or type 'q' to quit.\n| ")
+        self.menu.select_option()
 
 ########################################################################################################################################################
 # 2.)
     def display(self):
-        pass
+        print(f"CURRENT ASSIGNMENTS:\n{'*'*20}")
+        for key, item in self.assignments.items():
+            if item is not None:
+                result = self.bte.evaluate(self.ptb.build_tree(key), self.assignments)
+                print(f"{key} = {item} => {result}")
+        print()
+        self.menu.select_option()
 
 
 ########################################################################################################################################################

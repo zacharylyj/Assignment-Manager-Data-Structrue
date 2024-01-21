@@ -1,16 +1,27 @@
 import re
 import os
 
-class InputValidator:
+class DictionaryHandler:
+    def add_to_dict(self, assignment_input, assignments):
+        key, value = assignment_input.replace(" ", "").split("=")
+
+        assignments[key] = value
+        return assignments
+        
+
+class InputHandler:
     def __init__(self):
-        self.assignment_pattern = re.compile(r'^[a-zA-Z0-9+\-*/** ]+$')
+        self.assignment_pattern = re.compile(r'^[a-zA-Z0-9+\-*/**()= ]+$')
 
     def is_valid_assignment(self, assignment_string):
         if not assignment_string:
-            print("Assignment cannot be empty")
+            print("Input Error: Assignment cannot be empty")
             return False
         elif not self.assignment_pattern.match(assignment_string):
-            print("Invalid assignment")
+            print("Input Error: Use of Invalid characters")
+            return False
+        elif '=' not in assignment_string:
+            print("Input Error: Assignment must contain '='")
             return False
         else:
             return True
@@ -28,6 +39,7 @@ class InputValidator:
             filename += '.txt'
 
         return True
+ 
 
 class EquationSorter:
     def __init__(self):

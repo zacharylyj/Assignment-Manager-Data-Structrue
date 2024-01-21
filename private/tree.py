@@ -56,9 +56,10 @@ class ExpressionTokenizer:
 class ParseTreeBuilder:
     def __init__(self):
         self.stack = Stack()
+        self.tkn = ExpressionTokenizer()
 
     def build_tree(self, expression):
-        tokens = tokenize(expression)
+        tokens = self.tkn.tokenize(expression)
         for token in tokens:
             if token == '(':
                 self.stack.push(token)
