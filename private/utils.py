@@ -1,12 +1,15 @@
 import re
 import os
+
+
 class DictionaryHandler:
     def add_to_dict(self, assignment_input, assignments):
         key, value = assignment_input.replace(" ", "").split("=")
 
         assignments[key] = value
         return assignments
-    
+
+
 class InputHandler:
     def __init__(self):
         self.assignment_pattern = re.compile(r"^[a-zA-Z0-9+\-*/**()= ]+$")
@@ -22,6 +25,43 @@ class InputHandler:
             print("Input Error: Assignment must contain '='")
             return False
         else:
+            balance = 0
+            for char in assignment_string:
+                if char == "(":
+                    balance += 1
+                elif char == ")":
+                    balance -= 1
+                if balance < 0:  # Closing parenthesis before an opening one
+                    print("Error: Unbalanced parentheses")
+                    return False
+
+            if balance != 0:
+                print("Error: Unbalanced parentheses")
+                return False
+
+            # Check for valid characters and syntax
+            valid_chars = set(
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/() "
+            )
+            for char in assignment_string:
+                if char not in valid_chars:
+                    print("Error: Invalid character found")
+                    return False
+
+            # Basic syntax check for consecutive operators or invalid operand/operator placement
+            prev_char = ""
+            for char in assignment_string.replace(
+                " ", ""
+            ):  # Removing spaces to simplify checks
+                if self._isoperator(char) and self._isoperator(prev_char):
+                    print("Error: Consecutive operators")
+                    return False
+                if char in "+*/" and (prev_char == "" or prev_char in "+-*/("):
+                    print("Error: Operator at invalid position")
+                    return False
+                prev_char = char
+
+            # All checks passed
             return True
 
     def is_valid_filename(self, filename):
