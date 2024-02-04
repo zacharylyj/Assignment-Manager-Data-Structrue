@@ -1,17 +1,15 @@
 import re
 import os
-
 class DictionaryHandler:
     def add_to_dict(self, assignment_input, assignments):
         key, value = assignment_input.replace(" ", "").split("=")
 
         assignments[key] = value
         return assignments
-        
-
+    
 class InputHandler:
     def __init__(self):
-        self.assignment_pattern = re.compile(r'^[a-zA-Z0-9+\-*/**()= ]+$')
+        self.assignment_pattern = re.compile(r"^[a-zA-Z0-9+\-*/**()= ]+$")
 
     def is_valid_assignment(self, assignment_string):
         if not assignment_string:
@@ -20,12 +18,12 @@ class InputHandler:
         elif not self.assignment_pattern.match(assignment_string):
             print("Input Error: Use of Invalid characters")
             return False
-        elif '=' not in assignment_string:
+        elif "=" not in assignment_string:
             print("Input Error: Assignment must contain '='")
             return False
         else:
             return True
-        
+
     def is_valid_filename(self, filename):
         if not filename:
             print("Filename cannot be empty")
@@ -35,11 +33,11 @@ class InputHandler:
             print("File cannot be fun")
             return False
 
-        if '.' not in filename:
-            filename += '.txt'
+        if "." not in filename:
+            filename += ".txt"
 
         return True
- 
+
 
 class EquationSorter:
     def __init__(self):

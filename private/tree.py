@@ -1,5 +1,6 @@
 from private.datastructure import BinaryTree, Stack
 
+
 class ExpressionTokenizer:
     def __init__(self):
         pass
@@ -10,35 +11,59 @@ class ExpressionTokenizer:
 
     def _isoperator(self, char):
         # define criteria for operator
-        return char in {'+', '-', '*', '/', '**'}
+        return char in {"+", "-", "*", "/", "**"}
 
     def _tokenize_inner(self, exp):
         tokens = []
         i = 0
         while i < len(exp):
-            if exp[i] == '*' and i + 1 < len(exp) and exp[i + 1] == '*':
-                tokens.append('**')
+            if exp[i] == "*" and i + 1 < len(exp) and exp[i + 1] == "*":
+                tokens.append("**")
                 i += 2
-            elif exp[i] == '-':
-                if (i != 0 and (exp[i - 1]).isdigit() or self._isvariable(exp[i - 1]) or exp[i - 1] == ')') and ((exp[i + 1]).isdigit() or self._isvariable(exp[i + 1]) or self._isoperator(exp[i + 1])):
+            elif self._isvariable(exp[i]):
+                # Handle multi-variable names
+                variable_name = ""
+                while i < len(exp) and self._isvariable(exp[i]):
+                    variable_name += exp[i]
+                    i += 1
+                tokens.append(variable_name)
+            elif exp[i] == "-":
+                if (
+                    i != 0
+                    and (exp[i - 1]).isdigit()
+                    or self._isvariable(exp[i - 1])
+                    or exp[i - 1] == ")"
+                ) and (
+                    (exp[i + 1]).isdigit()
+                    or self._isvariable(exp[i + 1])
+                    or self._isoperator(exp[i + 1])
+                ):
                     tokens.append(exp[i])
                     i += 1
                 else:
-                    if (exp[i + 1]).isdigit() or self._isvariable(exp[i + 1]):
-                        tokens.extend(['(', exp[i + 1], '*', '-1', ')'])
+                    # Handle multi-variable names during the '-' operator
+                    if self._isvariable(exp[i + 1]):
+                        variable_name = ""
+                        while i + 1 < len(exp) and self._isvariable(exp[i + 1]):
+                            variable_name += exp[i + 1]
+                            i += 1
+                        tokens.extend(["(", variable_name, "*", "-1", ")"])
+                        i += 1
+                    elif (exp[i + 1]).isdigit() or self._isvariable(exp[i + 1]):
+                        tokens.extend(["(", exp[i + 1], "*", "-1", ")"])
                         i += 2
-                    elif exp[i + 1] == '(':
-                        tokens.append('(')
+                    elif exp[i + 1] == "(":
+                        tokens.append("(")
                         j = i + 1
                         bracket_count = 1
                         while j < len(exp) and bracket_count > 0:
                             j += 1
-                            if exp[j] == '(':
+                            if exp[j] == "(":
                                 bracket_count += 1
-                            elif exp[j] == ')':
+                            elif exp[j] == ")":
                                 bracket_count -= 1
-                        inside_tokens = self._tokenize_inner(exp[i + 2:j])
-                        tokens.extend(['(', *inside_tokens, ')', '*', '-1', ')'])
+                        inside_tokens = self._tokenize_inner(exp[i + 2 : j])
+                        tokens.extend(["(", *inside_tokens, ")", "*", "-1", ")"])
                         i = j + 1
                     else:
                         print("Error")
@@ -49,9 +74,9 @@ class ExpressionTokenizer:
         return tokens
 
     def tokenize(self, expression):
-        exp = ''.join(('(',expression.replace(" ", ""),')'))
-        # print(tokenize_inner(exp)) #debug
+        exp = "".join(("(", expression.replace(" ", ""), ")"))
         return self._tokenize_inner(exp)
+
 
 class ParseTreeBuilder:
     def __init__(self):
@@ -61,14 +86,14 @@ class ParseTreeBuilder:
     def build_tree(self, expression):
         tokens = self.tkn.tokenize(expression)
         for token in tokens:
-            if token == '(':
+            if token == "(":
                 self.stack.push(token)
             elif token in ["+", "-", "*", "/", "**"]:
                 self.stack.push(token)
-            elif token == ')':
+            elif token == ")":
                 # pop until the '('
                 temp_stack = Stack()
-                while not self.stack.isEmpty() and self.stack.peek() != '(':
+                while not self.stack.isEmpty() and self.stack.peek() != "(":
                     temp_stack.push(self.stack.pop())
                 self.stack.pop()  # Pop the '('
 
@@ -91,6 +116,7 @@ class ParseTreeBuilder:
 
         # last node on the stack is the root of the tree
         return self.stack.pop()
+
 
 class BinaryTreeEvaluator:
     def evaluate(self, root, variables, parent_var=None):
@@ -124,22 +150,24 @@ class BinaryTreeEvaluator:
             try:
                 return int(key)
             except ValueError:
-                return None  # in case the leaf node is not an integer or a valid variable
+                return (
+                    None  # in case the leaf node is not an integer or a valid variable
+                )
 
         # recarsively evaluate the left and right subtrees
         left_val = self.evaluate(root.getLeftTree(), variables, parent_var)
         right_val = self.evaluate(root.getRightTree(), variables, parent_var)
 
         # apply the operation at the current node (need handle division by 0 later)
-        if key == '+':
+        if key == "+":
             return right_val + left_val
-        elif key == '-':
+        elif key == "-":
             return right_val - left_val
-        elif key == '*':
+        elif key == "*":
             return right_val * left_val
-        elif key == '/':
+        elif key == "/":
             return right_val / left_val
-        elif key == '**':
-            return right_val ** left_val
+        elif key == "**":
+            return right_val**left_val
 
         return 0  # in case of an unsupported operation (debug)
