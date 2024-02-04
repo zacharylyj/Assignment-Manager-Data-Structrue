@@ -34,11 +34,21 @@ class ExpressionTokenizer:
                     i += 1
                 tokens.append(number)
             elif exp[i] == "-":
-                if i + 1 < len(exp) and (
-                    exp[i + 1].isdigit()
+                # Check if it's a normal minus sign based on your provided condition
+                if (
+                    i != 0
+                    and (exp[i - 1]).isdigit()
+                    or self._isvariable(exp[i - 1])
+                    or exp[i - 1] == ")"
+                ) and (
+                    (exp[i + 1]).isdigit()
                     or self._isvariable(exp[i + 1])
                     or exp[i + 1] == "("
                 ):
+                    tokens.append("-")  # Append '-' directly as an operator
+                    i += 1
+                else:
+                    # Handle as negation
                     if exp[i + 1] == "(":
                         j = i + 2
                         bracket_count = 1
@@ -49,27 +59,25 @@ class ExpressionTokenizer:
                                 bracket_count -= 1
                             j += 1
                         inside_tokens = self._tokenize_inner(exp[i + 2 : j - 1])
-                        tokens.extend(
-                            ["(", *inside_tokens, "*", "-1", ")"]
-                        )  # Correct placement of ')'
-                        i = j  # Adjust to move past the processed section
-                    elif exp[i + 1].isdigit():  # Negative number
-                        number = exp[i + 1]
-                        i += 2
-                        while i < len(exp) and (exp[i].isdigit() or exp[i] == "."):
-                            number += exp[i]
+                        tokens.extend(["(", *inside_tokens, "*", "-1", ")"])
+                        i = j
+                    elif exp[i + 1].isdigit() or self._isvariable(exp[i + 1]):
+                        # For negative numbers or variables next
+                        i += 1  # Move past '-' to process the number/variable
+                        if exp[i].isdigit():  # Negative number
+                            number = exp[i]
                             i += 1
-                        tokens.extend(["(", number, "*", "-1", ")"])
-                    else:  # Negative variable
-                        variable_name = exp[i + 1]
-                        i += 2
-                        while i < len(exp) and self._isvariable(exp[i]):
-                            variable_name += exp[i]
+                            while i < len(exp) and (exp[i].isdigit() or exp[i] == "."):
+                                number += exp[i]
+                                i += 1
+                            tokens.extend(["(", number, "*", "-1", ")"])
+                        else:  # Negative variable
+                            variable_name = exp[i]
                             i += 1
-                        tokens.extend(["(", variable_name, "*", "-1", ")"])
-                else:
-                    tokens.append(exp[i])
-                    i += 1
+                            while i < len(exp) and self._isvariable(exp[i]):
+                                variable_name += exp[i]
+                                i += 1
+                            tokens.extend(["(", variable_name, "*", "-1", ")"])
             else:
                 tokens.append(exp[i])
                 i += 1
