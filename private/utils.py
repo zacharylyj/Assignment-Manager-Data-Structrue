@@ -17,6 +17,8 @@ class InputHandler:
         )
 
     def is_valid_assignment(self, assignment_string):
+        temp_assignments = {}
+        temp_assignments = assignment_string
         if not assignment_string:
             print("Input Error: Assignment cannot be empty")
             return False
