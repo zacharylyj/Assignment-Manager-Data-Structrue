@@ -41,7 +41,7 @@ class InputHandler:
 
             # Check for valid characters and syntax
             valid_chars = set(
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/() "
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/()= "
             )
             for char in assignment_string:
                 if char not in valid_chars:
