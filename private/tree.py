@@ -1,4 +1,5 @@
 from private.datastructure import BinaryTree, Stack
+from private.menu import Menu
 
 
 class ExpressionTokenizer:
@@ -6,11 +7,9 @@ class ExpressionTokenizer:
         pass
 
     def _isvariable(self, char):
-        # define criteria for variable
         return char.isalpha()
 
     def _isoperator(self, char):
-        # define criteria for operator
         return char in {"+", "-", "*", "/", "**"}
 
     def _tokenize_inner(self, exp):
@@ -21,53 +20,56 @@ class ExpressionTokenizer:
                 tokens.append("**")
                 i += 2
             elif self._isvariable(exp[i]):
-                # Handle multi-variable names
-                variable_name = ""
+                variable_name = exp[i]
+                i += 1
                 while i < len(exp) and self._isvariable(exp[i]):
                     variable_name += exp[i]
                     i += 1
                 tokens.append(variable_name)
-            elif exp[i] == "-":
-                if (
-                    i != 0
-                    and (exp[i - 1]).isdigit()
-                    or self._isvariable(exp[i - 1])
-                    or exp[i - 1] == ")"
-                ) and (
-                    (exp[i + 1]).isdigit()
-                    or self._isvariable(exp[i + 1])
-                    or self._isoperator(exp[i + 1])
-                ):
-                    tokens.append(exp[i])
+            elif exp[i].isdigit():
+                number = exp[i]
+                i += 1
+                while i < len(exp) and (exp[i].isdigit() or exp[i] == "."):
+                    number += exp[i]
                     i += 1
-                else:
-                    # Handle multi-variable names during the '-' operator
-                    if self._isvariable(exp[i + 1]):
-                        variable_name = ""
-                        while i + 1 < len(exp) and self._isvariable(exp[i + 1]):
-                            variable_name += exp[i + 1]
-                            i += 1
-                        tokens.extend(["(", variable_name, "*", "-1", ")"])
-                        i += 1
-                    elif (exp[i + 1]).isdigit() or self._isvariable(exp[i + 1]):
-                        tokens.extend(["(", exp[i + 1], "*", "-1", ")"])
-                        i += 2
-                    elif exp[i + 1] == "(":
-                        tokens.append("(")
-                        j = i + 1
+                tokens.append(number)
+            elif exp[i] == "-":
+                if i + 1 < len(exp) and (
+                    exp[i + 1].isdigit()
+                    or self._isvariable(exp[i + 1])
+                    or exp[i + 1] == "("
+                ):
+                    if exp[i + 1] == "(":
+                        j = i + 2
                         bracket_count = 1
                         while j < len(exp) and bracket_count > 0:
-                            j += 1
                             if exp[j] == "(":
                                 bracket_count += 1
                             elif exp[j] == ")":
                                 bracket_count -= 1
-                        inside_tokens = self._tokenize_inner(exp[i + 2 : j])
-                        tokens.extend(["(", *inside_tokens, ")", "*", "-1", ")"])
-                        i = j + 1
-                    else:
-                        print("Error")
-                        break
+                            j += 1
+                        inside_tokens = self._tokenize_inner(exp[i + 2 : j - 1])
+                        tokens.extend(
+                            ["(", *inside_tokens, "*", "-1", ")"]
+                        )  # Correct placement of ')'
+                        i = j  # Adjust to move past the processed section
+                    elif exp[i + 1].isdigit():  # Negative number
+                        number = exp[i + 1]
+                        i += 2
+                        while i < len(exp) and (exp[i].isdigit() or exp[i] == "."):
+                            number += exp[i]
+                            i += 1
+                        tokens.extend(["(", number, "*", "-1", ")"])
+                    else:  # Negative variable
+                        variable_name = exp[i + 1]
+                        i += 2
+                        while i < len(exp) and self._isvariable(exp[i]):
+                            variable_name += exp[i]
+                            i += 1
+                        tokens.extend(["(", variable_name, "*", "-1", ")"])
+                else:
+                    tokens.append(exp[i])
+                    i += 1
             else:
                 tokens.append(exp[i])
                 i += 1
@@ -85,6 +87,7 @@ class ParseTreeBuilder:
 
     def build_tree(self, expression):
         tokens = self.tkn.tokenize(expression)
+        print(tokens)
         for token in tokens:
             if token == "(":
                 self.stack.push(token)
@@ -119,6 +122,9 @@ class ParseTreeBuilder:
 
 
 class BinaryTreeEvaluator:
+    def __init__(self):
+        self.menu = Menu()
+
     def evaluate(self, root, variables, parent_var=None):
         if root is None:
             return 0
@@ -157,7 +163,6 @@ class BinaryTreeEvaluator:
         # recarsively evaluate the left and right subtrees
         left_val = self.evaluate(root.getLeftTree(), variables, parent_var)
         right_val = self.evaluate(root.getRightTree(), variables, parent_var)
-
         # apply the operation at the current node (need handle division by 0 later)
         if key == "+":
             return right_val + left_val
@@ -166,6 +171,9 @@ class BinaryTreeEvaluator:
         elif key == "*":
             return right_val * left_val
         elif key == "/":
+            # if left_val == 0:
+            #     print("Neg")
+            #     self.menu.select_option
             return right_val / left_val
         elif key == "**":
             return right_val**left_val
