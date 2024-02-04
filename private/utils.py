@@ -12,7 +12,9 @@ class DictionaryHandler:
 
 class InputHandler:
     def __init__(self):
-        self.assignment_pattern = re.compile(r"^[a-zA-Z0-9+\-*/**()= ]+$")
+        self.assignment_pattern = re.compile(
+            r"^[a-zA-Z][a-zA-Z0-9]*\s*=\s*[a-zA-Z0-9+\-*/**()= ]+$"
+        )
 
     def _is_variable(self, char):
         return char.isalpha()
@@ -26,11 +28,13 @@ class InputHandler:
             return False
 
         if not self.assignment_pattern.match(assignment_string):
-            print("Input Error: Use of invalid characters")
+            print("Input Error: Use of invalid characters or invalid assignment format")
             return False
 
-        if "=" not in assignment_string:
-            print("Input Error: Assignment must contain '='")
+        # Extract the variable name from the assignment string
+        variable_name = assignment_string.split("=")[0].strip()
+        if not variable_name.isalpha():
+            print("Input Error: Invalid variable name")
             return False
 
         tokens = assignment_string.split()  # Splitting by spaces to simplify analysis
