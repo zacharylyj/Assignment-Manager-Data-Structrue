@@ -14,6 +14,12 @@ class InputHandler:
     def __init__(self):
         self.assignment_pattern = re.compile(r"^[a-zA-Z0-9+\-*/**()= ]+$")
 
+    def _isvariable(self, char):
+        return char.isalpha()
+
+    def _isoperator(self, char):
+        return char in {"+", "-", "*", "/", "**"}
+
     def is_valid_assignment(self, assignment_string):
         if not assignment_string:
             print("Input Error: Assignment cannot be empty")
@@ -25,6 +31,15 @@ class InputHandler:
             print("Input Error: Assignment must contain '='")
             return False
         else:
+            tokens = (
+                assignment_string.split()
+            )  # Splitting by spaces to simplify analysis
+            for token in tokens:
+                if "=" in token:
+                    sides = token.split("=")
+                    if len(sides) == 2 and sides[0].strip() == sides[1].strip():
+                        print("Error: Self-assignment is not allowed")
+                        return False
             balance = 0
             for char in assignment_string:
                 if char == "(":

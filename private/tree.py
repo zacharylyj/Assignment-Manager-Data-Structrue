@@ -3,9 +3,6 @@ from private.menu import Menu
 
 
 class ExpressionTokenizer:
-    def __init__(self):
-        pass
-
     def _isvariable(self, char):
         return char.isalpha()
 
