@@ -16,73 +16,28 @@ class InputHandler:
             r"^[a-zA-Z][a-zA-Z0-9]*\s*=\s*[a-zA-Z0-9+\-*/**()= ]+$"
         )
 
-    def _is_variable(self, char):
-        return char.isalpha()
-
-    def _is_operator(self, char):
-        return char in {"+", "-", "*", "/", "**"}
-
     def is_valid_assignment(self, assignment_string):
         if not assignment_string:
             print("Input Error: Assignment cannot be empty")
             return False
-
-        if not self.assignment_pattern.match(assignment_string):
-            print("Input Error: Use of invalid characters or invalid assignment format")
+        elif not self.assignment_pattern.match(assignment_string):
+            print("Input Error: Use of Invalid characters")
             return False
-
-        # Extract the variable name from the assignment string
-        variable_name = assignment_string.split("=")[0].strip()
-        if not variable_name.isalpha():
-            print("Input Error: Invalid variable name")
+        elif "=" not in assignment_string:
+            print("Input Error: Assignment must contain '='")
             return False
-
-        tokens = assignment_string.split()  # Splitting by spaces to simplify analysis
-        for token in tokens:
-            if "=" in token:
-                sides = token.split("=")
-                if len(sides) == 2 and sides[0].strip() == sides[1].strip():
-                    print("Error: Self-assignment is not allowed")
-                    return False
-
-        balance = 0
-        for char in assignment_string:
-            if char == "(":
-                balance += 1
-            elif char == ")":
-                balance -= 1
-            if balance < 0:  # Closing parenthesis before an opening one
-                print("Error: Unbalanced parentheses")
-                return False
-
-        if balance != 0:
-            print("Error: Unbalanced parentheses")
+        elif assignment_string.count("(") != assignment_string.count(")"):
+            print("Input Error: Unequal number of opening and closing parentheses")
             return False
-
-        # Check for valid characters and syntax
-        valid_chars = set(
-            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+-*/()= "
-        )
-        for char in assignment_string:
-            if char not in valid_chars:
-                print("Error: Invalid character found")
-                return False
-
-        # Basic syntax check for consecutive operators or invalid operand/operator placement
-        prev_char = ""
-        for char in assignment_string.replace(
-            " ", ""
-        ):  # Removing spaces to simplify checks
-            if self._is_operator(char) and self._is_operator(prev_char):
-                print("Error: Consecutive operators")
-                return False
-            if char in "+*/" and (prev_char == "" or prev_char in "+-*/("):
-                print("Error: Operator at an invalid position")
-                return False
-            prev_char = char
-
-        # All checks passed
-        return True
+        elif (
+            "=" in assignment_string
+            and assignment_string.split("=")[0].strip()
+            == assignment_string.split("=")[1].strip()
+        ):
+            print("Input Error: Self-assignment is not allowed")
+            return False
+        else:
+            return True
 
     def is_valid_filename(self, filename):
         if not filename:
