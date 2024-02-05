@@ -26,27 +26,34 @@ class InputHandler:
                 return True
             except:
                 return False 
-    def too_many_op(equation):
-        # Improved pattern to correctly handle the '**-' exception
-        pattern = r'(?:[+\-*/]{3,}(?<!\*\*\-))'
+        def too_many_op(equation):
+            # Improved pattern to correctly handle the '**-' exception
+            pattern = r'(?:[+\-*/]{3,}(?<!\*\*\-))'
 
-        if re.search(pattern, equation):
-            return False
-        return True
-    def check_double_op(equation):
-        exceptions = {"**", "*-", "**-", "--", "+-", "/-"}
-        operators = {"+", "-", "*", "/", "**"}
-        
-        # Iterate through the string to check for side by side operators
-        for i in range(len(equation) - 1):
-            if s[i] in operators:
-                # Check for two-character exceptions
-                if equation[i:i+2] in exceptions or equation[i:i+3] in exceptions:
-                    continue
-                # Check for a non-exception side by side operators
-                if equation[i+1] in operators:
-                    return False
-        return True
+            if re.search(pattern, equation):
+                return False
+            return True
+        def check_double_op(equation):
+            exceptions = {"**", "*-", "**-", "--", "+-", "/-"}
+            operators = {"+", "-", "*", "/", "**"}
+            
+            # Iterate through the string to check for side by side operators
+            for i in range(len(equation) - 1):
+                if equation[i] in operators:
+                    # Check for two-character exceptions
+                    if equation[i:i+2] in exceptions or equation[i:i+3] in exceptions:
+                        continue
+                    # Check for a non-exception side by side operators
+                    if equation[i+1] in operators:
+                        return False
+            return True
+        def check_solo(equation):
+            _, equation_right = equation.split('=')
+            for i, char in enumerate(equation_right):
+                if char in "+*/":
+                    if i == 0 or (not equation_right[i-1].isdigit() and (i < 2 or not equation_right[i-2].isdigit())):
+                        return False, char
+            return True, None
 
         if not assignment_string:
             return False, "Input Error: Assignment cannot be empty"
@@ -56,10 +63,12 @@ class InputHandler:
             return False, "Input Error: Unequal number of opening and closing parentheses"
         elif validity_equation(assignment_string) is False:
             return False, "Input Error: Invalid equation"
-        elif too_many_op(equation) is False:
+        elif too_many_op(assignment_string) is False:
             return False, "Input Error: Operator Error"
-        elif check_double_op(equation) is False:
+        elif check_double_op(assignment_string) is False:
             return False, "Input Error: Operator Error"
+        elif check_solo(assignment_string) is False:
+            return False, "Input Error: Free Roaming Operator"
         else:
             return True, None
 
