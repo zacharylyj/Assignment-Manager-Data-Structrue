@@ -167,3 +167,41 @@ class Node:
         self.item = item
         self.next = None
 
+class Graph:
+    def __init__(self):
+        self.graph = {}
+
+    def add_edge(self, src, dest):
+        if src not in self.graph:
+            self.graph[src] = []
+        self.graph[src].append(dest)
+
+    def detect_circular_dependency(self):
+        visited = set()
+        rec_stack = set()
+        circular_dependency = set()
+
+        def dfs(node):
+            visited.add(node)
+            rec_stack.add(node)
+
+            if node in self.graph:
+                for neighbor in self.graph[node]:
+                    if neighbor not in visited:
+                        if dfs(neighbor):
+                            return True
+                    elif neighbor in rec_stack:
+                        circular_dependency.add(node)
+                        return True
+
+            rec_stack.remove(node)
+            return False
+
+        for node in self.graph:
+            if node not in visited:
+                if dfs(node):
+                    circular_dependency.add(node)
+                    return circular_dependency
+
+        return set()    
+

@@ -1,4 +1,4 @@
-from private.datastructure import BinaryTree, Stack
+from private.datastructure import BinaryTree, Stack, Graph
 from private.menu import Menu
 
 
@@ -128,6 +128,7 @@ class ParseTreeBuilder:
 class BinaryTreeEvaluator:
     def __init__(self):
         self.menu = Menu()
+        self.circular_detector = Graph()
 
     def evaluate(self, root, variables, parent_var=None):
         if root is None:
@@ -135,13 +136,18 @@ class BinaryTreeEvaluator:
 
         key = root.getKey()
 
+        # Add edges to the graph for circular dependency detection
+        if parent_var and key in variables:
+            self.circular_detector.add_edge(parent_var, key)
+
+        # Detect circular dependency
+        circular_dependency = self.circular_detector.detect_circular_dependency()
+        if circular_dependency:
+            print(f"Circular dependency detected!")
+            return None
+
         # check if the key is a variable in the dictionary
         if key in variables:
-            # handle circular dependency
-            if key == parent_var:
-                print(f"Circular dependency detected involving '{key}'")
-                return None
-
             # get the value of the variable
             var_value = variables[key]
 
@@ -155,31 +161,30 @@ class BinaryTreeEvaluator:
                 var_tree = builder.build_tree(var_value)
                 return self.evaluate(var_tree, variables, parent_var=key)
 
-        # if it a leaf node and not a variable, return its value as an integer
+        # if it's a leaf node and not a variable, return its value as an integer
         if root.getLeftTree() is None and root.getRightTree() is None:
             try:
                 return int(key)
             except ValueError:
-                return (
-                    None  # in case the leaf node is not an integer or a valid variable
-                )
+                return None  # in case the leaf node is not an integer or a valid variable
 
-        # recarsively evaluate the left and right subtrees
+        # recursively evaluate the left and right subtrees
         left_val = self.evaluate(root.getLeftTree(), variables, parent_var)
         right_val = self.evaluate(root.getRightTree(), variables, parent_var)
-        # apply the operation at the current node (need handle division by 0 later)
+
+        # apply the operation at the current node (need to handle division by 0 later)
         if key == "+":
-            return right_val + left_val
+            return right_val + left_val if right_val is not None and left_val is not None else None
         elif key == "-":
-            return right_val - left_val
+            return right_val - left_val if right_val is not None and left_val is not None else None
         elif key == "*":
-            return right_val * left_val
+            return right_val * left_val if right_val is not None and left_val is not None else None
         elif key == "/":
             # if left_val == 0:
             #     print("Neg")
             #     self.menu.select_option
-            return right_val / left_val
+            return right_val / left_val if right_val is not None and left_val is not None and left_val != 0 else None
         elif key == "**":
-            return right_val**left_val
+            return right_val ** left_val if right_val is not None and left_val is not None else None
 
         return 0  # in case of an unsupported operation (debug)
