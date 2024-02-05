@@ -19,7 +19,7 @@ class InputHandler:
 
     def is_valid_assignment(self, assignment_string):
         def is_numeric_equation(equation):
-            pattern = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*\(\s*(?:\d*\.?\d+|\d+\.\d*|[a-zA-Z_][a-zA-Z0-9_]*)(?:\s*[\+\-\*\/]\s*(?:\d*\.?\d+|\d+\.\d*|[a-zA-Z_][a-zA-Z0-9_]*))*\s*\)\s*$'
+            numeric_pattern = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*\(\s*(?:\d*\.?\d+|\d+\.\d*|[a-zA-Z_][a-zA-Z0-9_]*)(?:\s*[\+\-\*\/]\s*(?:\d*\.?\d+|\d+\.\d*|[a-zA-Z_][a-zA-Z0-9_]*))*\s*\)\s*$'
             return bool(re.match(numeric_pattern, equation))
 
         def is_complex_equation(equation):
