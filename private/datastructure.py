@@ -31,7 +31,7 @@ class BinaryTree:
             self.rightTree = new_node
 
     def printPreorder(self, level=0):
-        print(str(level * '-') + str(self.key))
+        print(str(level * '.') + str(self.key))
         if self.leftTree is not None:
             self.leftTree.printPreorder(level + 1)
         if self.rightTree is not None:
@@ -40,7 +40,7 @@ class BinaryTree:
     def printInorder(self, level=0):
         if self.leftTree is not None:
             self.leftTree.printInorder(level + 1)
-        print(str(level * '-') + str(self.key))
+        print(str(level * '.') + str(self.key))
         if self.rightTree is not None:
             self.rightTree.printInorder(level + 1)
 
@@ -49,7 +49,7 @@ class BinaryTree:
             self.leftTree.printPostorder(level + 1)
         if self.rightTree is not None:
             self.rightTree.printPostorder(level + 1)
-        print(str(level * '-') + str(self.key))
+        print(str(level * '.') + str(self.key))
 
 
 class Stack:
