@@ -1,5 +1,6 @@
 import re
 import os
+from private.tree import ParseTreeBuilder, BinaryTreeEvaluator
 
 
 class DictionaryHandler:
@@ -15,10 +16,13 @@ class InputHandler:
         self.assignment_pattern = re.compile(
             r"^[a-zA-Z][a-zA-Z0-9]*\s*=\s*[a-zA-Z0-9+\-*/**()= ]+$"
         )
+        self.dh = DictionaryHandler()
+        self.ptb = ParseTreeBuilder()
+        self.bte = BinaryTreeEvaluator()
 
     def is_valid_assignment(self, assignment_string):
         temp_assignments = {}
-        temp_assignments = assignment_string
+        temp_assignments = self.dh.add_to_dict(assignment_string, temp_assignments)
         if not assignment_string:
             print("Input Error: Assignment cannot be empty")
             return False
@@ -31,14 +35,20 @@ class InputHandler:
         elif assignment_string.count("(") != assignment_string.count(")"):
             print("Input Error: Unequal number of opening and closing parentheses")
             return False
-        elif (
-            "=" in assignment_string
-            and assignment_string.split("=")[0].strip()
-            == assignment_string.split("=")[1].strip()
-        ):
-            print("Input Error: Self-assignment is not allowed")
-            return False
+        elif assignment_string:
+            return True
         else:
+            try:
+                for key, item in temp_assignments.items():
+                    if item is not None:
+                        temp = self.bte.evaluate(
+                            self.ptb.build_tree(key), temp_assignments
+                        )
+                    if temp is None:
+                        print("Input Error: Expression is not valid. Please try Again")
+            except Exception as e:
+                print("Input Error: Expression is not valid. Please try Again")
+                return False
             return True
 
     def is_valid_filename(self, filename):

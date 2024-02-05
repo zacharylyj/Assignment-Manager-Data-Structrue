@@ -1,7 +1,14 @@
 class Menu:
     options = []
 
-    def __init__(self, author_id1=int, author_name1=str,author_id2=int, author_name2=str, author_class=str):
+    def __init__(
+        self,
+        author_id1=int,
+        author_name1=str,
+        author_id2=int,
+        author_name2=str,
+        author_class=str,
+    ):
         self.author_id1 = author_id1
         self.author_id2 = author_id2
         self.author_name1 = author_name1

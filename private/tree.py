@@ -92,7 +92,6 @@ class ParseTreeBuilder:
 
     def build_tree(self, expression):
         tokens = self.tkn.tokenize(expression)
-        print(tokens)
         for token in tokens:
             if token == "(":
                 self.stack.push(token)

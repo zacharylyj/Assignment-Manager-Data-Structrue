@@ -38,7 +38,6 @@ class Controller:
     # 2.)
     def display(self):
         print(f"CURRENT ASSIGNMENTS:\n{'*'*20}")
-        print(self.assignments)
         for key, item in self.assignments.items():
             if item is not None:
                 result = self.bte.evaluate(self.ptb.build_tree(key), self.assignments)
