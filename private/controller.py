@@ -22,16 +22,15 @@ class Controller:
             "Enter the assignment stament you want to add/modify:\nFor example, a=(1+2)\n| "
         )
         while True:
-            is_valid, error_message = self.ih.is_valid_assignment(assignment_input)
             if assignment_input.lower() == "q" or assignment_input.lower() == "exit":
                 print()
                 self.menu.select_option()
-            elif is_valid:
-                self.assignments = self.dh.add_to_dict(
-                    assignment_input, self.assignments
-                )
             else:
-                print(f"{error_message}")
+                is_valid, error_message = self.ih.is_valid_assignment(assignment_input)
+                if is_valid:
+                    self.assignments = self.dh.add_to_dict(assignment_input, self.assignments)
+                else:
+                    print(f"Invalid Assignment: {error_message}")
             print()
             assignment_input = input(
                 "Enter another assignment statement or type 'q' to quit.\n| "
