@@ -36,6 +36,9 @@ class InputHandler:
             print("Input Error: Unequal number of opening and closing parentheses")
             return False
         else:
+            pattern2 = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*(?:[a-zA-Z_][a-zA-Z0-9_]*\s*(?:\+|-)\s*)*[a-zA-Z_][a-zA-Z0-9_]*\s*$'
+            if bool(re.match(pattern, equation.strip())) == True:
+                return True
             try:
                 for key, item in temp_assignments.items():
                     if item is not None:

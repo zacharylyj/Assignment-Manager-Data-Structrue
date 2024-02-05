@@ -84,7 +84,7 @@ class Controller:
     def option1(self):
         self.assignments = {}
         print("Assignments cleared")
-        print()
+        self.menu.select_option()
 
     ########################################################################################################################################################
     # 7.)
