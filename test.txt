@@ -1,4 +1,4 @@
-Banana = (2*(65.5 + 2.25))//
+Banana = (2*(65.5 + 2.25))
 Strawberry=(Pear*1)
 Cherry = (Lemon/2)
 Apple= (3*5)

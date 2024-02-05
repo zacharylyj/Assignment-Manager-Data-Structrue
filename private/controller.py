@@ -23,8 +23,7 @@ class Controller:
         )
         while True:
             if assignment_input.lower() == "q" or assignment_input.lower() == "exit":
-                print()
-                self.menu.select_option()
+                break
             else:
                 is_valid, error_message = self.ih.is_valid_assignment(assignment_input)
                 if is_valid:
@@ -35,6 +34,8 @@ class Controller:
             assignment_input = input(
                 "Enter another assignment statement or type 'q' to quit.\n| "
             )
+        print("\n")
+        self.menu.select_option()
 
     ########################################################################################################################################################
     # 2.)
@@ -85,6 +86,12 @@ class Controller:
                         self.assignments = self.dh.add_to_dict(line, self.assignments)
                     else:
                         print(f"{error_message}\nline: {line}")
+            print(f"CURRENT ASSIGNMENTS:\n{'*'*20}")
+            for key, item in self.assignments.items():
+                if item is not None:
+                    result = self.bte.evaluate(self.ptb.build_tree(key), self.assignments)
+                    print(f"{key} = {item} => {result}")
+            print()
         except FileNotFoundError:
             print(f"\nFile not found: {file}")
         print("\n")
