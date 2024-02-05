@@ -180,10 +180,12 @@ class Graph:
         visited = set()
         rec_stack = set()
         circular_dependency = set()
+        path = []
 
         def dfs(node):
             visited.add(node)
             rec_stack.add(node)
+            path.append(node)
 
             if node in self.graph:
                 for neighbor in self.graph[node]:
@@ -191,16 +193,16 @@ class Graph:
                         if dfs(neighbor):
                             return True
                     elif neighbor in rec_stack:
-                        circular_dependency.add(node)
+                        circular_dependency.update(path[path.index(neighbor):])
                         return True
 
             rec_stack.remove(node)
+            path.pop()
             return False
 
         for node in self.graph:
             if node not in visited:
                 if dfs(node):
-                    circular_dependency.add(node)
                     return circular_dependency
 
         return set()

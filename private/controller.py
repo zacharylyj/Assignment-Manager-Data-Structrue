@@ -1,6 +1,7 @@
 from private.menu import Menu
 from private.tree import ExpressionTokenizer, ParseTreeBuilder, BinaryTreeEvaluator
 from private.utils import InputHandler, DictionaryHandler, MergeSort
+from private.datastructure import Graph
 import os
 import math
 
@@ -14,6 +15,7 @@ class Controller:
         self.bte = BinaryTreeEvaluator()
         self.ih = InputHandler()
         self.dh = DictionaryHandler()
+        self.circular_detector = Graph()
 
     ########################################################################################################################################################
     # 1.)
@@ -45,7 +47,11 @@ class Controller:
             if item is not None:
                 result = self.bte.evaluate(self.ptb.build_tree(key), self.assignments)
                 print(f"{key} = {item} => {result}")
-        print()
+        for key, item in self.assignments.items():
+            if item is not None:
+                circular_dependency = self.bte.check_cd(self.ptb.build_tree(key), self.assignments)
+        if len(circular_dependency) != 0:
+            print(f"\nCircular dependency detected involving {circular_dependency}\n")
         self.menu.select_option()
 
     ########################################################################################################################################################
@@ -91,6 +97,11 @@ class Controller:
                 if item is not None:
                     result = self.bte.evaluate(self.ptb.build_tree(key), self.assignments)
                     print(f"{key} = {item} => {result}")
+            for key, item in self.assignments.items():
+                if item is not None:
+                    circular_dependency = self.bte.check_cd(self.ptb.build_tree(key), self.assignments)
+            if len(circular_dependency) != 0:
+                print(f"\nCircular dependency detected involving {circular_dependency}\n")
             print()
         except FileNotFoundError:
             print(f"\nFile not found: {file}")

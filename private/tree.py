@@ -142,8 +142,7 @@ class BinaryTreeEvaluator:
 
         # Detect circular dependency
         circular_dependency = self.circular_detector.detect_circular_dependency()
-        if circular_dependency:
-            print(f"Circular dependency detected!")
+        if key in circular_dependency:
             return None
 
         # check if the key is a variable in the dictionary
@@ -188,3 +187,18 @@ class BinaryTreeEvaluator:
             return right_val ** left_val if right_val is not None and left_val is not None else None
 
         return 0  # in case of an unsupported operation (debug)
+    
+    def check_cd(self, root, variables, parent_var=None):
+        if root is None:
+            return 0
+
+        key = root.getKey()
+
+        # Add edges to the graph for circular dependency detection
+        if parent_var and key in variables:
+            self.circular_detector.add_edge(parent_var, key)
+
+        # Detect circular dependency
+        circular_dependency = self.circular_detector.detect_circular_dependency()
+        if len(circular_dependency) != 0:
+            return circular_dependency
