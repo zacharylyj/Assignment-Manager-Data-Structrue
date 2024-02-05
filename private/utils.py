@@ -35,8 +35,6 @@ class InputHandler:
         elif assignment_string.count("(") != assignment_string.count(")"):
             print("Input Error: Unequal number of opening and closing parentheses")
             return False
-        elif assignment_string:
-            return True
         else:
             try:
                 for key, item in temp_assignments.items():

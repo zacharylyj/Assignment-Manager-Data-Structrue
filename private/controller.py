@@ -48,7 +48,26 @@ class Controller:
     ########################################################################################################################################################
     # 3.)
     def evaluate(self):
-        pass
+        variable_input = input("Enter the variable whose expression you want to see in in-order:\nFor example, if you have an assignment a=(1+2), just type 'a'\n| ")
+        if variable_input in self.assignments:
+            expression = self.assignments[variable_input]
+            try:
+                print()
+                # parse the expression into a binary tree
+                expression_tree = self.ptb.build_tree(expression)
+                # perform an in-order traversal to display the three
+                print("Expression Tree:")
+                expression_tree.printInorder()
+                result = self.bte.evaluate(expression_tree, self.assignments, parent_var=variable_input)
+                print(f"\nValue for variable '{variable_input}' is: {result if result is not None else 'None'}\n")
+                print()
+            except Exception as e:
+                print(f"Error in processing the expression for '{variable_input}': {str(e)}\n")
+        else:
+            print("Variable not found in the current assignments")
+        self.menu.select_option()
+
+            
 
     ########################################################################################################################################################
     # 4.)
