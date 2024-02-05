@@ -13,16 +13,13 @@ class DictionaryHandler:
 
 class InputHandler:
     def __init__(self):
-        self.assignment_pattern = re.compile(
-            r"^[a-zA-Z][a-zA-Z0-9]*\s*=\s*[a-zA-Z0-9+\-*/**()= ]+$"
-        )
         self.dh = DictionaryHandler()
         self.ptb = ParseTreeBuilder()
         self.bte = BinaryTreeEvaluator()
 
     def is_valid_assignment(self, assignment_string):
         def is_numeric_equation(equation):
-            numeric_pattern = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*\((?:[\d\.\+\-\*\/\s\(\)]+)\)\s*$'
+            pattern = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*\(\s*(?:\d*\.?\d+|\d+\.\d*|[a-zA-Z_][a-zA-Z0-9_]*)(?:\s*[\+\-\*\/]\s*(?:\d*\.?\d+|\d+\.\d*|[a-zA-Z_][a-zA-Z0-9_]*))*\s*\)\s*$'
             return bool(re.match(numeric_pattern, equation))
 
         def is_complex_equation(equation):
@@ -33,9 +30,6 @@ class InputHandler:
         temp_assignments = self.dh.add_to_dict(assignment_string, temp_assignments)
         if not assignment_string:
             print("Input Error: Assignment cannot be empty")
-            return False
-        elif not self.assignment_pattern.match(assignment_string):
-            print("Input Error: Use of Invalid characters")
             return False
         elif "=" not in assignment_string:
             print("Input Error: Assignment must contain '='")
