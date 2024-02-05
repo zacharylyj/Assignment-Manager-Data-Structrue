@@ -21,6 +21,14 @@ class InputHandler:
         self.bte = BinaryTreeEvaluator()
 
     def is_valid_assignment(self, assignment_string):
+        def is_numeric_equation(equation):
+            numeric_pattern = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*\((?:[\d\.\+\-\*\/\s\(\)]+)\)\s*$'
+            return bool(re.match(numeric_pattern, equation))
+
+        def is_complex_equation(equation):
+            complex_pattern = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*\((?:[a-zA-Z_0-9\.\+\-\*\/\s\(\)]+)\)\s*$'
+            return bool(re.match(complex_pattern, equation))
+
         temp_assignments = {}
         temp_assignments = self.dh.add_to_dict(assignment_string, temp_assignments)
         if not assignment_string:
@@ -36,11 +44,13 @@ class InputHandler:
             print("Input Error: Unequal number of opening and closing parentheses")
             return False
         else:
-            pattern2 = r'^[a-zA-Z_][a-zA-Z0-9_]*=\((?:[a-zA-Z0-9_\.]+|\((?:[a-zA-Z0-9_\.+\-*/]+)\)|[+\-*/])+\)$'
-            if bool(re.match(pattern2, assignment_string.strip())) != True:
-                print("Input Error: Invalid Expression")
+            assignment_string_clean = assignment_string.replace(" ", "")
+            if is_numeric_equation(assignment_string_clean):
+                return True
+            elif is_complex_equation(assignment_string_clean):
+                return True
+            else:
                 return False
-            return True
 
     def is_valid_filename(self, filename):
         if not filename:
