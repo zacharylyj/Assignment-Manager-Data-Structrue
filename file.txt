@@ -3,7 +3,6 @@ Durain = (Apple*Pear)
 
 *** Statements with value => 135.5
 Mango = ((Apple+(Durain+(Pear*(Blueberry*(Coconut/Strawberry)))))/2)
-Banana = (2*(65.5+2.25))
 
 *** Statements with value => 16.0
 Starfruit = (2**4)

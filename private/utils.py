@@ -29,22 +29,19 @@ class InputHandler:
         temp_assignments = {}
         temp_assignments = self.dh.add_to_dict(assignment_string, temp_assignments)
         if not assignment_string:
-            print("Input Error: Assignment cannot be empty")
-            return False
+            return False, "Input Error: Assignment cannot be empty"
         elif "=" not in assignment_string:
-            print("Input Error: Assignment must contain '='")
-            return False
+            return False, "Input Error: Assignment must contain '='"
         elif assignment_string.count("(") != assignment_string.count(")"):
-            print("Input Error: Unequal number of opening and closing parentheses")
-            return False
+            return False, "Input Error: Unequal number of opening and closing parentheses"
         else:
             assignment_string_clean = assignment_string.replace(" ", "")
             if is_numeric_equation(assignment_string_clean):
-                return True
+                return True, None
             elif is_complex_equation(assignment_string_clean):
-                return True
+                return True, None
             else:
-                return False
+                return False, "Input Error: Invalid Format"
 
     def is_valid_filename(self, filename):
         if not filename:

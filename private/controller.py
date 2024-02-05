@@ -22,13 +22,16 @@ class Controller:
             "Enter the assignment stament you want to add/modify:\nFor example, a=(1+2)\n| "
         )
         while True:
+            is_valid, error_message = self.ih.is_valid_assignment(assignment_input)
             if assignment_input.lower() == "q" or assignment_input.lower() == "exit":
                 print()
                 self.menu.select_option()
-            elif self.ih.is_valid_assignment(assignment_input):
+            elif is_valid:
                 self.assignments = self.dh.add_to_dict(
                     assignment_input, self.assignments
                 )
+            else:
+                print(f"{error_message}")
             print()
             assignment_input = input(
                 "Enter another assignment statement or type 'q' to quit.\n| "
@@ -73,15 +76,19 @@ class Controller:
     # 4.)
     def read_file(self):
         file = input("Please enter input file: ")
+        print("\n")
         try:
             with open(file, 'r') as file:
                 for line in file:
                     line = line.strip()
-                    if self.ih.is_valid_assignment(line):
+                    is_valid, error_message = self.ih.is_valid_assignment(line)
+                    if is_valid:
                         self.assignments = self.dh.add_to_dict(line, self.assignments)
+                    else:
+                        print(f"{error_message}\nline: {line}")
         except FileNotFoundError:
             print(f"\nFile not found: {file}")
-            print("\n")
+        print("\n")
         self.menu.select_option()
 
     ########################################################################################################################################################
