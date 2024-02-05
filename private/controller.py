@@ -77,7 +77,29 @@ class Controller:
     ########################################################################################################################################################
     # 5.)
     def sort_file(self):
-        pass
+        result_list = []
+        for key, item in self.assignments.items():
+            if item is not None:
+                result = self.bte.evaluate(self.ptb.build_tree(key), self.assignments)
+                result_list.append((key, item, result))
+        mergesort = MergeSort(result_list)
+        sorted_list = mergesort.items
+        if len(sorted_list) == 0:
+            print("No item to sort.")
+            self.menu.select_option()
+        else:
+            file = input("Please enter output file: ")
+            with open(file, "w") as file:
+                prev_result = None
+                for result_tuple in sorted_list:
+                    key, item, result = result_tuple
+                    if result != prev_result:
+                        if prev_result is not None:
+                            file.write("\n")  # Separate entries with the same result
+                        file.write(f"*** Statements with value => {result}\n")
+                    file.write(f"{key} = {item}\n")
+                    prev_result = result
+            self.menu.select_option()
 
     ########################################################################################################################################################
     # 6.)
