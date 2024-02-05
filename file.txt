@@ -1,0 +1,11 @@
+*** Statements with value => 25
+b = d+e
+
+*** Statements with value => 20
+d = 20
+
+*** Statements with value => 5
+e = 5
+
+*** Statements with value => None
+a = b+c

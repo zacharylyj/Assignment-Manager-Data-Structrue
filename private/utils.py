@@ -37,7 +37,7 @@ class InputHandler:
             return False
         else:
             pattern2 = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*(?:[a-zA-Z_][a-zA-Z0-9_]*\s*(?:\+|-)\s*)*[a-zA-Z_][a-zA-Z0-9_]*\s*$'
-            if bool(re.match(pattern, equation.strip())) == True:
+            if bool(re.match(pattern2, assignment_string.strip())) == True:
                 return True
             try:
                 for key, item in temp_assignments.items():
@@ -105,3 +105,47 @@ class EquationSorter:
             sorted_eqs[var] = None
 
         return sorted_eqs
+    
+class MergeSort:
+    def __init__(self, items, sort_index = 2):
+        self.items = items
+        self.sort_index = sort_index
+        self._merge_sort()
+
+    def _merge_sort(self):
+        if len(self.items) > 1:
+            mid = int(len(self.items) / 2)
+
+            left_half = self.items[:mid]
+            right_half = self.items[mid:]
+
+            left_sorter = MergeSort(left_half, self.sort_index)
+            right_sorter = MergeSort(right_half, self.sort_index)
+
+            left_index, right_index, merge_index = 0, 0, 0
+
+            while left_index < len(left_half) and right_index < len(right_half):
+                left_value = left_half[left_index][self.sort_index]
+                right_value = right_half[right_index][self.sort_index]
+
+                left_value = float('-inf') if left_value is None else left_value
+                right_value = float('-inf') if right_value is None else right_value
+
+                # Reverse the comparison for descending order
+                if left_value > right_value:
+                    self.items[merge_index] = left_half[left_index]
+                    left_index += 1
+                else:
+                    self.items[merge_index] = right_half[right_index]
+                    right_index += 1
+                merge_index += 1
+
+            while left_index < len(left_half):
+                self.items[merge_index] = left_half[left_index]
+                left_index += 1
+                merge_index += 1
+
+            while right_index < len(right_half):
+                self.items[merge_index] = right_half[right_index]
+                right_index += 1
+                merge_index += 1

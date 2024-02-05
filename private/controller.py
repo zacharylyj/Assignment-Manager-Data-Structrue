@@ -1,6 +1,6 @@
 from private.menu import Menu
 from private.tree import ExpressionTokenizer, ParseTreeBuilder, BinaryTreeEvaluator
-from private.utils import InputHandler, DictionaryHandler
+from private.utils import InputHandler, DictionaryHandler, MergeSort
 import os
 import math
 
@@ -72,7 +72,16 @@ class Controller:
     ########################################################################################################################################################
     # 4.)
     def read_file(self):
-        pass
+        file = input("Please enter output file: ")
+        try:
+            with open(file, 'r') as file:
+                for line in file:
+                    print(line)
+                    line = line.strip()
+                    if self.ih.is_valid_assignment(line):
+                        self.assignments = self.dh.add_to_dict(line, self.assignments)
+        except FileNotFoundError:
+            print(f"File not found: {file}")
 
     ########################################################################################################################################################
     # 5.)
