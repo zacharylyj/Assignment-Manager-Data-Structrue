@@ -37,18 +37,8 @@ class InputHandler:
             return False
         else:
             pattern2 = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*(?:[a-zA-Z_][a-zA-Z0-9_]*\s*(?:\+|-)\s*)*[a-zA-Z_][a-zA-Z0-9_]*\s*$'
-            if bool(re.match(pattern2, assignment_string.strip())) == True:
-                return True
-            try:
-                for key, item in temp_assignments.items():
-                    if item is not None:
-                        temp = self.bte.evaluate(
-                            self.ptb.build_tree(key), temp_assignments
-                        )
-                    if temp is None:
-                        print("Input Error: Expression is not valid. Please try Again")
-            except Exception as e:
-                print("Input Error: Expression is not valid. Please try Again")
+            if bool(re.match(pattern2, assignment_string.strip())) != True:
+                print("Input Error: Invalid Expression")
                 return False
             return True
 
