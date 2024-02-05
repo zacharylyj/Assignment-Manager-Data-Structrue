@@ -164,7 +164,7 @@ class BinaryTreeEvaluator:
         # if it's a leaf node and not a variable, return its value as an integer
         if root.getLeftTree() is None and root.getRightTree() is None:
             try:
-                return int(key)
+                return float(key)
             except ValueError:
                 return None  # in case the leaf node is not an integer or a valid variable
 

@@ -72,16 +72,17 @@ class Controller:
     ########################################################################################################################################################
     # 4.)
     def read_file(self):
-        file = input("Please enter output file: ")
+        file = input("Please enter input file: ")
         try:
             with open(file, 'r') as file:
                 for line in file:
-                    print(line)
                     line = line.strip()
                     if self.ih.is_valid_assignment(line):
                         self.assignments = self.dh.add_to_dict(line, self.assignments)
         except FileNotFoundError:
-            print(f"File not found: {file}")
+            print(f"\nFile not found: {file}")
+            print("\n")
+        self.menu.select_option()
 
     ########################################################################################################################################################
     # 5.)
@@ -108,6 +109,7 @@ class Controller:
                         file.write(f"*** Statements with value => {result}\n")
                     file.write(f"{key} = {item}\n")
                     prev_result = result
+            print("\n")
             self.menu.select_option()
 
     ########################################################################################################################################################
