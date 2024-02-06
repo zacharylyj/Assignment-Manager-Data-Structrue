@@ -186,11 +186,16 @@ class Controller:
         pass
 
     def option3(self):
-        user_formula = input("Please enter a formula:\ny = ")
-        try:
-            self.plotter.plot_function(user_formula, xmin=-10, xmax=10, width=80, height=20, x_range=10)
-        except:
-            print("Error")
+        while True:
+            user_formula = input("Please enter a formula example(x**2 + 2*x + 1):\ny = ")
+            if user_formula.lower() in ['q', 'exit']:
+                break
+            try:
+                self.plotter.plot_function(user_formula, xmin=-10, xmax=10, width=100, height=30, x_range=10)
+                self.menu.select_option()
+            except:
+                print(f"\nInput Error: Try Again or Quit('q')\n")
+        self.menu.select_option()
     def option4(self):
         pass
 
