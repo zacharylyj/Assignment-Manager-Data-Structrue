@@ -202,7 +202,8 @@ class Controller:
             if user_input.lower() in ['q', 'exit']:
                 break
             try:
-                self.simp.simplify_equation(user_input)
+                print("\nSimplified Equation: ")
+                print(f"y = {self.simp.simplify_equation(user_input)}")
                 self.menu.select_option()
             except:
                 print(f"\nInput Error: Try Again or Quit('q')\n")
