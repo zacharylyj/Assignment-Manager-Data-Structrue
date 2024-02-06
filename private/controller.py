@@ -1,7 +1,7 @@
 from private.menu import Menu
 from private.tree import ExpressionTokenizer, ParseTreeBuilder, BinaryTreeEvaluator
 from private.utils import InputHandler, DictionaryHandler, MergeSort, Plotter, Simplify
-from private.datastructure import Graph
+from private.datastructure import VariableSearch
 import os
 import math
 
@@ -182,7 +182,32 @@ class Controller:
     ########################################################################################################################################################
     # 7.)
     def option2(self):
-        pass
+        result_list = []
+        for key, item in self.assignments.items():
+            if item is not None:
+                result = self.bte.evaluate(self.ptb.build_tree(key), self.assignments)
+                result_list.append((key, item, result))
+        mergesort = MergeSort(result_list)
+        sorted_list = mergesort.items
+        print(sorted_list)
+        if len(sorted_list) == 0:
+            print("No item to sort.")
+            self.menu.select_option()
+        else:
+            target = input("\nEnter a target value to check for: ")
+            while not target.isdigit():
+                target = input("\nEnter a target value to check for: ")
+            target = float(target)
+            search_target = VariableSearch(sorted_list)
+            found_variables = search_target.find_variables_by_value(target)
+            if found_variables:
+                print(f"\equations with value {target}")
+                for equation in found_variables:
+                    print(f"{equation[0]} = {equation[1]}")
+            else:
+                print(f"\nNo variables found with value {target}.")
+            print("\n")
+            self.menu.select_option()
 
     def option3(self):
         while True:

@@ -209,3 +209,26 @@ class Graph:
 
     def reset_edges(self):
         self.graph = {}
+
+class VariableSearch:
+    def __init__(self, variables):
+        self.value_to_variables = {}
+        for variable, expression, value in variables:
+            if value not in self.value_to_variables:
+                self.value_to_variables[value] = []
+            self.value_to_variables[value].append((variable, expression))
+    
+    def _dfs(self, value, visited, found_variables):
+        if value in visited:
+            return
+        visited.add(value)
+        if value in self.value_to_variables:
+            found_variables.extend(self.value_to_variables[value])
+            for neighbor in self.value_to_variables[value]:
+                self._dfs(neighbor, visited, found_variables)
+    
+    def find_variables_by_value(self, target_value):
+        visited = set()
+        found_variables = []
+        self._dfs(target_value, visited, found_variables)
+        return found_variables
