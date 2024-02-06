@@ -1,6 +1,6 @@
 from private.menu import Menu
 from private.tree import ExpressionTokenizer, ParseTreeBuilder, BinaryTreeEvaluator
-from private.utils import InputHandler, DictionaryHandler, MergeSort
+from private.utils import InputHandler, DictionaryHandler, MergeSort, Plotter
 from private.datastructure import Graph
 import os
 import math
@@ -15,6 +15,7 @@ class Controller:
         self.bte = BinaryTreeEvaluator()
         self.ih = InputHandler()
         self.dh = DictionaryHandler()
+        self.plotter = Plotter()
 
     ########################################################################################################################################################
     # 1.)
@@ -163,6 +164,10 @@ class Controller:
         pass
 
     def option3(self):
+        plotter.s
+        pass
+
+    def option4(self):
         pass
 
 

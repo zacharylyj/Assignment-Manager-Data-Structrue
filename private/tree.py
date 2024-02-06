@@ -8,7 +8,6 @@ class ExpressionTokenizer:
 
     def _isoperator(self, char):
         return char in {"+", "-", "*", "/", "**"}
-
     def _tokenize_inner(self, exp):
         tokens = []
         i = 0
@@ -31,7 +30,6 @@ class ExpressionTokenizer:
                     i += 1
                 tokens.append(number)
             elif exp[i] == "-":
-                # Check if it's a normal minus sign based on your provided condition
                 if (
                     i != 0
                     and (exp[i - 1]).isdigit()

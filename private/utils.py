@@ -2,14 +2,12 @@ import re
 import os
 from private.tree import ParseTreeBuilder, BinaryTreeEvaluator
 
-
 class DictionaryHandler:
     def add_to_dict(self, assignment_input, assignments):
         key, value = assignment_input.replace(" ", "").split("=")
 
         assignments[key] = value
         return assignments
-
 
 class InputHandler:
     def __init__(self):
@@ -71,7 +69,6 @@ class InputHandler:
             return False, "Input Error: Free Roaming Operator"
         else:
             return True, None
-
 
     def is_valid_filename(self, filename):
         if not filename:
@@ -170,3 +167,63 @@ class MergeSort:
                 self.items[merge_index] = right_half[right_index]
                 right_index += 1
                 merge_index += 1
+
+class Plotter:
+    def plot_function(formula, xmin, xmax, width=80, height=20, x_range=10):
+        def math_function(x):
+            return eval(formula, {"x": x, "__builtins__": {}})
+
+
+        def derivative(f, x, h=0.0001):
+            return (f(x + h) - f(x - h)) / (2 * h)
+        
+        def find_turning_points(f, xmin, xmax, steps=1000):
+            x_values = [xmin + i * (xmax - xmin) / steps for i in range(steps + 1)]
+            turning_points = []
+
+            for i in range(1, len(x_values)):
+                x0, x1 = x_values[i - 1], x_values[i]
+                dy_dx0, dy_dx1 = derivative(f, x0), derivative(f, x1)
+
+                if dy_dx0 * dy_dx1 < 0 or dy_dx0 == 0:
+                    turning_points.append((x0 + x1) / 2)
+
+            return turning_points
+
+        turning_points_x = find_turning_points(math_function, xmin, xmax)
+        if turning_points_x:
+            center_x = sum(turning_points_x) / len(turning_points_x)
+        else:
+            center_x = (xmin + xmax) / 2
+
+        xmin = center_x - x_range / 2
+        xmax = center_x + x_range / 2
+
+        ymin, ymax = min([math_function(x) for x in turning_points_x] + [math_function(xmin), math_function(xmax)]), max([math_function(x) for x in turning_points_x] + [math_function(xmin), math_function(xmax)])
+        ypad = (ymax - ymin) * 0.1
+        ymin, ymax = ymin - ypad, ymax + ypad
+
+        plot = [[' ' for _ in range(width)] for _ in range(height)]
+
+        for i in range(width):
+            x = xmin + (xmax - xmin) * i / width
+            y = math_function(x)
+            if ymin <= y <= ymax:
+                plot_y = int((y - ymin) / (ymax - ymin) * (height - 1))
+                plot[height - plot_y - 1][i] = '*'
+
+        for tp_x in turning_points_x:
+            x_pos = int((tp_x - xmin) / (xmax - xmin) * width)
+            y = math_function(tp_x)
+            if ymin <= y <= ymax:
+                plot_y = int((y - ymin) / (ymax - ymin) * (height - 1))
+                plot[height - plot_y - 1][x_pos] = 'X'
+
+        for row in plot:
+            print(''.join(row))
+        
+        print(f"\n\ny = {formula}")
+        if turning_points_x:
+            print("Turning Points Centered Plot:")
+        for tp_x in turning_points_x:
+            print(f"x ≈ {tp_x:.1f}, y ≈ {math_function(tp_x):.1f}")
