@@ -164,9 +164,11 @@ class Controller:
         pass
 
     def option3(self):
-        plotter.s
-        pass
-
+        user_formula = input("Please enter a formula:\ny = ")
+        try:
+            self.plotter.plot_function(user_formula, xmin=-10, xmax=10, width=80, height=20, x_range=10)
+        except:
+            print("Error")
     def option4(self):
         pass
 
