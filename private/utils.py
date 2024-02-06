@@ -231,20 +231,16 @@ class Plotter:
 
 class Simplify:
     def simplify_equation(self, equation):
-        # Handle multiplication and prepare for splitting
-        equation = equation.replace('x*x', 'x**2').replace('-', '+-')
+        equation = equation.replace('x*x', 'x**2').replace('-', '+-').replace(' ', '')
         parts = equation.split('+')
         
-        # Initialize a dictionary for coefficients
         coefficients = {}
         
-        # Process each part
         for part in parts:
             part = part.strip()
-            if not part:  # Skip empty parts
+            if not part: 
                 continue
             
-            # Determine the power of x
             if 'x**' in part:
                 power = int(part.split('x**')[1])
                 coef_part = part.split('x**')[0]
@@ -266,15 +262,13 @@ class Simplify:
                 except ValueError:
                     continue
             
-            # Aggregate coefficients
             coefficients[power] = coefficients.get(power, 0) + coefficient
         
-        # Construct simplified equation
         simplified_parts = []
         for power in sorted(coefficients, reverse=True):
             coefficient = coefficients[power]
             if coefficient == 0:
-                continue  # Skip zero coefficients
+                continue
             if power == 0:
                 simplified_parts.append(str(coefficient))
             elif power == 1:
