@@ -189,7 +189,6 @@ class Controller:
                 result_list.append((key, item, result))
         mergesort = MergeSort(result_list)
         sorted_list = mergesort.items
-        print(sorted_list)
         if len(sorted_list) == 0:
             print("No item to sort.")
             self.menu.select_option()
