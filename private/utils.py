@@ -228,3 +228,72 @@ class Plotter:
         for tp_x in turning_points_x:
             print(f"x ≈ {tp_x:.1f}, y ≈ {math_function(tp_x):.1f}")
         print()
+
+class Simplify:
+    def simplify_equation(self, equation):
+        # Handle multiplication and prepare for splitting
+        equation = equation.replace('x*x', 'x**2').replace('-', '+-')
+        parts = equation.split('+')
+        
+        # Initialize a dictionary for coefficients
+        coefficients = {}
+        
+        # Process each part
+        for part in parts:
+            part = part.strip()
+            if not part:  # Skip empty parts
+                continue
+            
+            # Determine the power of x
+            if 'x**' in part:
+                power = int(part.split('x**')[1])
+                coef_part = part.split('x**')[0]
+            elif 'x' in part:
+                power = 1
+                coef_part = part.split('x')[0]
+            else:
+                power = 0
+                coef_part = part
+            
+            coef_part = coef_part.replace('*', '') 
+            if coef_part in ('', '+'):
+                coefficient = 1
+            elif coef_part == '-':
+                coefficient = -1
+            else:
+                try:
+                    coefficient = int(coef_part)
+                except ValueError:
+                    continue
+            
+            # Aggregate coefficients
+            coefficients[power] = coefficients.get(power, 0) + coefficient
+        
+        # Construct simplified equation
+        simplified_parts = []
+        for power in sorted(coefficients, reverse=True):
+            coefficient = coefficients[power]
+            if coefficient == 0:
+                continue  # Skip zero coefficients
+            if power == 0:
+                simplified_parts.append(str(coefficient))
+            elif power == 1:
+                if coefficient == 1:
+                    simplified_parts.append("x")
+                elif coefficient == -1:
+                    simplified_parts.append("-x")
+                else:
+                    simplified_parts.append(f"{coefficient}*x")
+            else:
+                if coefficient == 1:
+                    simplified_parts.append(f"x**{power}")
+                elif coefficient == -1:
+                    simplified_parts.append(f"-x**{power}")
+                else:
+                    simplified_parts.append(f"{coefficient}*x**{power}")
+        
+        simplified_equation = '+'.join(simplified_parts).replace('+-', '-')
+        first_char, rest_expression = simplified_equation[0], simplified_equation[1:]
+        spaced_expression = first_char + re.sub(r'([+\-])', r' \1 ', rest_expression)
+
+        return spaced_expression

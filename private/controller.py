@@ -1,6 +1,6 @@
 from private.menu import Menu
 from private.tree import ExpressionTokenizer, ParseTreeBuilder, BinaryTreeEvaluator
-from private.utils import InputHandler, DictionaryHandler, MergeSort, Plotter
+from private.utils import InputHandler, DictionaryHandler, MergeSort, Plotter, Simplify
 from private.datastructure import Graph
 import os
 import math
@@ -16,6 +16,7 @@ class Controller:
         self.ih = InputHandler()
         self.dh = DictionaryHandler()
         self.plotter = Plotter()
+        self.simp = Simplify()
 
     ########################################################################################################################################################
     # 1.)
@@ -84,8 +85,6 @@ class Controller:
         else:
             print("Variable not found in the current assignments")
         self.menu.select_option()
-
-            
 
     ########################################################################################################################################################
     # 4.)
@@ -196,7 +195,19 @@ class Controller:
             except:
                 print(f"\nInput Error: Try Again or Quit('q')\n")
         self.menu.select_option()
+        
     def option4(self):
+        while True:
+            user_input = input("Please enter a formula example(x**2 + 2*x + 1):\ny = ")
+            if user_input.lower() in ['q', 'exit']:
+                break
+            try:
+                self.simp.simplify_equation(user_input)
+                self.menu.select_option()
+            except:
+                print(f"\nInput Error: Try Again or Quit('q')\n")
+        self.menu.select_option()
+        
         pass
 
 
