@@ -15,7 +15,6 @@ class Controller:
         self.bte = BinaryTreeEvaluator()
         self.ih = InputHandler()
         self.dh = DictionaryHandler()
-        self.circular_detector = Graph()
 
     ########################################################################################################################################################
     # 1.)
@@ -42,16 +41,25 @@ class Controller:
     ########################################################################################################################################################
     # 2.)
     def display(self):
+
         print(f"CURRENT ASSIGNMENTS:\n{'*'*20}")
+        self.bte.reset_edges()
+
         for key, item in self.assignments.items():
             if item is not None:
                 result = self.bte.evaluate(self.ptb.build_tree(key), self.assignments)
                 print(f"{key} = {item} => {result}")
+        circular_dependency = 0
+        
         for key, item in self.assignments.items():
             if item is not None:
                 circular_dependency = self.bte.check_cd(self.ptb.build_tree(key), self.assignments)
-        if len(circular_dependency) != 0:
+
+        if circular_dependency == 0:
+            print()
+        elif len(circular_dependency) != 0:
             print(f"\nCircular dependency detected involving {circular_dependency}\n")
+
         self.menu.select_option()
 
     ########################################################################################################################################################
@@ -93,16 +101,22 @@ class Controller:
                     else:
                         print(f"{error_message}\nline: {line}")
             print(f"CURRENT ASSIGNMENTS:\n{'*'*20}")
+            self.bte.reset_edges()
+
             for key, item in self.assignments.items():
                 if item is not None:
                     result = self.bte.evaluate(self.ptb.build_tree(key), self.assignments)
                     print(f"{key} = {item} => {result}")
+            circular_dependency = 0
+            
             for key, item in self.assignments.items():
                 if item is not None:
                     circular_dependency = self.bte.check_cd(self.ptb.build_tree(key), self.assignments)
-            if len(circular_dependency) != 0:
+
+            if circular_dependency == 0:
+                print()
+            elif len(circular_dependency) != 0:
                 print(f"\nCircular dependency detected involving {circular_dependency}\n")
-            print()
         except FileNotFoundError:
             print(f"\nFile not found: {file}")
         print("\n")

@@ -206,3 +206,6 @@ class Graph:
                     return circular_dependency
 
         return set()
+
+    def reset_edges(self):
+        self.graph = {}

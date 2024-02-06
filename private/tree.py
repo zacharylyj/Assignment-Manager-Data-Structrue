@@ -197,5 +197,7 @@ class BinaryTreeEvaluator:
 
         # Detect circular dependency
         circular_dependency = self.circular_detector.detect_circular_dependency()
-        if len(circular_dependency) != 0:
-            return circular_dependency
+        return circular_dependency
+    
+    def reset_edges(self):
+        self.circular_detector.reset_edges()
