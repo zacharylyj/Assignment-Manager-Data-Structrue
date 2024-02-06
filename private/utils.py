@@ -226,7 +226,7 @@ class Plotter:
         if turning_points_x:
             print("Turning Points Centered Plot:")
         for tp_x in turning_points_x:
-            print(f"x ≈ {tp_x:.1f}, y ≈ {math_function(tp_x):.1f}")
+            print(f"x ≈ {tp_x:.2f}, y ≈ {math_function(tp_x):.2f}")
         print()
 
 class Simplify:
