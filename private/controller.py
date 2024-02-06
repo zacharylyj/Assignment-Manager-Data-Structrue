@@ -200,7 +200,7 @@ class Controller:
             search_target = VariableSearch(sorted_list)
             found_variables = search_target.find_variables_by_value(target)
             if found_variables:
-                print(f"\equations with value {target}")
+                print(f"\nequations with value {target}\n")
                 for equation in found_variables:
                     print(f"{equation[0]} = {equation[1]}")
             else:
