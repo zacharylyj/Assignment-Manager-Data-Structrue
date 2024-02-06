@@ -154,8 +154,30 @@ class Controller:
     ########################################################################################################################################################
     # 6.)
     def option1(self):
-        self.assignments = {}
-        print("Assignments cleared")
+        if len(self.assignments) == 0 and len(self.save) == 0:
+            print("\nNothing to delete/load or save.\n")
+        else:
+            dl_input = input("Do you want to load the last save, save or delete (l/s/d): ")
+            if dl_input.lower() != "d" and dl_input.lower() != "l" and dl_input.lower() != "s":
+                print("\nInvalid input") 
+            elif dl_input == 'd':
+                save = input("\nDo you want to save the current assignments temporarily (y/n): ")
+                while save.lower() != 'y' and save.lower() != 'n':
+                    save = input("\nDo you want to save the current assignments temporarily (y/n): ")
+                if save == 'y':
+                    self.save = self.assignments
+                    self.assignments = {}
+                    print("\nAssignments cleared")
+                else:
+                    self.assignments = {}
+                    print("\nAssignments cleared")
+            elif dl_input == 'l':
+                self.assignments = self.save
+                print("\nLoaded last saved assignments\n")
+            elif dl_input == 's':
+                self.save = self.assignments
+                print("\nSaved assignments\n")
+        
         self.menu.select_option()
 
     ########################################################################################################################################################
