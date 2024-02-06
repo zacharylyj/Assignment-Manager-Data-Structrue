@@ -102,7 +102,7 @@ class ParseTreeBuilder:
                 temp_stack = Stack()
                 while not self.stack.isEmpty() and self.stack.peek() != "(":
                     temp_stack.push(self.stack.pop())
-                self.stack.pop()  # Pop the '('
+                self.stack.pop()
 
                 # process the temp_stack to form a sub-tree
                 while temp_stack.size() > 1:
@@ -140,7 +140,7 @@ class BinaryTreeEvaluator:
         if parent_var and key in variables:
             self.circular_detector.add_edge(parent_var, key)
 
-        # Detect circular dependency
+        # detect circular dependency
         circular_dependency = self.circular_detector.detect_circular_dependency()
         if key in circular_dependency:
             return None
@@ -179,9 +179,6 @@ class BinaryTreeEvaluator:
         elif key == "*":
             return right_val * left_val if right_val is not None and left_val is not None else None
         elif key == "/":
-            # if left_val == 0:
-            #     print("Neg")
-            #     self.menu.select_option
             return right_val / left_val if right_val is not None and left_val is not None and left_val != 0 else None
         elif key == "**":
             return right_val ** left_val if right_val is not None and left_val is not None else None

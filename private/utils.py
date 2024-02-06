@@ -18,30 +18,60 @@ class InputHandler:
         self.bte = BinaryTreeEvaluator()
 
     def is_valid_assignment(self, assignment_string):
-        def is_numeric_equation(equation):
-            numeric_pattern = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*\(\s*(?:\d*\.?\d+|\d+\.\d*|[a-zA-Z_][a-zA-Z0-9_]*)(?:\s*[\+\-\*\/]\s*(?:\d*\.?\d+|\d+\.\d*|[a-zA-Z_][a-zA-Z0-9_]*))*\s*\)\s*$'
-            return bool(re.match(numeric_pattern, equation))
+        def validity_equation(equation):
+            _, equation_right = equation.split('=')
+            modified_equation = re.sub(r'[a-zA-Z]+', '1', equation_right)
+            try:
+                eval(modified_equation)
+                return True
+            except:
+                return False 
+        def too_many_op(equation):
+            # Improved pattern to correctly handle the '**-' exception
+            pattern = r'(?:[+\-*/]{3,}(?<!\*\*\-))'
 
-        def is_complex_equation(equation):
-            complex_pattern = r'^\s*[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*\((?:[a-zA-Z_0-9\.\+\-\*\/\s\(\)]+)\)\s*$'
-            return bool(re.match(complex_pattern, equation))
+            if re.search(pattern, equation):
+                return False
+            return True
+        def check_double_op(equation):
+            exceptions = {"**", "*-", "**-", "--", "+-", "/-"}
+            operators = {"+", "-", "*", "/", "**"}
+            
+            # Iterate through the string to check for side by side operators
+            for i in range(len(equation) - 1):
+                if equation[i] in operators:
+                    # Check for two-character exceptions
+                    if equation[i:i+2] in exceptions or equation[i:i+3] in exceptions:
+                        continue
+                    # Check for a non-exception side by side operators
+                    if equation[i+1] in operators:
+                        return False
+            return True
+        def check_solo(equation):
+            _, equation_right = equation.split('=')
+            for i, char in enumerate(equation_right):
+                if char in "+*/":
+                    if i == 0 or (not equation_right[i-1].isdigit() and (i < 2 or not equation_right[i-2].isdigit())):
+                        return False, char
+            return True, None
 
-        temp_assignments = {}
-        temp_assignments = self.dh.add_to_dict(assignment_string, temp_assignments)
         if not assignment_string:
             return False, "Input Error: Assignment cannot be empty"
         elif "=" not in assignment_string:
             return False, "Input Error: Assignment must contain '='"
         elif assignment_string.count("(") != assignment_string.count(")"):
             return False, "Input Error: Unequal number of opening and closing parentheses"
+        elif validity_equation(assignment_string) is False:
+            return False, "Input Error: Invalid equation"
+        elif too_many_op(assignment_string) is False:
+            return False, "Input Error: Operator Error"
+        elif check_double_op(assignment_string) is False:
+            return False, "Input Error: Operator Error"
+        elif check_solo(assignment_string) is False:
+            return False, "Input Error: Free Roaming Operator"
         else:
-            assignment_string_clean = assignment_string.replace(" ", "")
-            if is_numeric_equation(assignment_string_clean):
-                return True, None
-            elif is_complex_equation(assignment_string_clean):
-                return True, None
-            else:
-                return False, "Input Error: Invalid Format"
+            return True, None
+
 
     def is_valid_filename(self, filename):
         if not filename:
