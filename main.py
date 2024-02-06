@@ -14,7 +14,7 @@ def main():
     menu.add(controller.option1, 6, "Extra Option One")
     menu.add(controller.option2, 7, "Extra Option Two")
     menu.add(controller.option3, 8, "Graphical Plotter")
-    menu.add(controller.option4, 9, "Extra Option Four")
+    menu.add(controller.option4, 9, "Simplifier")
     menu.add(menu.exit_menu, 10, "Exit")
     menu.intro()
 
